@@ -16,7 +16,7 @@ Du kan teste trigge funksjonene fra index.js
 
 ## RAG - Retrieval Augmented Generation
 
-RAG er en teknikk for å dele opp store dokumenter i mindre deler (chunks). Disse delene blir indeksert og kan deretter spørres mot. Når en spørring kommer inn, vil RAG returnere en liste med deler som passer til spørringen. Delene blir sendt med som en del av prompten til språkmodellen. Dette kalles embedding. Språkmodellen vil da returnere en liste med svar som passer til prompten og konteksten.
+[RAG](https://python.langchain.com/docs/use_cases/question_answering/) er en teknikk for å dele opp store dokumenter i mindre deler (chunks). Disse delene blir indeksert og kan deretter spørres mot. Når en spørring kommer inn, vil RAG returnere en liste med deler som passer til spørringen. Delene blir sendt med som en del av prompten til språkmodellen. Dette kalles embedding. Språkmodellen vil da returnere en liste med svar som passer til prompten og konteksten.
 
 ![qa_flow](./img/qa_flow.jpeg)
 
