@@ -14,7 +14,7 @@ import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 
-const kontekst = "Du skal alltid svare på en enkel og forståelig måte. Oppgi datoer og frister det hvis det er relevant. På slutten av responsen skal du alltid skrive teksten: 'Husk at responsen fra denne chatboten kan være upresis eller faktisk feil. Det er derfor viktig at du sjekker informasjonen du får her med med informasjon fra kilden.'";
+const kontekst = "Du skal alltid svare på en enkel og forståelig måte og du skal alltid prøve å svare med utgangspunkt i konteksten. På slutten av responsen skal du alltid skrive teksten: 'Husk at responsen fra denne chatboten kan være upresis eller faktisk feil. Det er derfor viktig at du sjekker informasjonen du får her med med informasjon fra kilden.'";
 
 // Funksjon som spør mot en pdf. Enkel POC med loader for å teste funksjonalitet
 export const simpleAskDok = async (dokPath, prompt) => {
