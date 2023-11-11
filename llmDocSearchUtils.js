@@ -1,4 +1,4 @@
-
+// Diverse funksjoner fra langchain
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
@@ -14,7 +14,6 @@ import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 
-const mdTekst = fs.readFileSync('./docs/delingsinfo.md', 'utf8');
 const kontekst = "Du skal alltid svare på en enkel og forståelig måte. Oppgi datoer og frister det hvis det er relevant. På slutten av responsen skal du alltid skrive teksten: 'Husk at responsen fra denne chatboten kan være upresis eller faktisk feil. Det er derfor viktig at du sjekker informasjonen du får her med med informasjon fra kilden.'";
 
 // Funksjon som spør mot en pdf. Enkel POC med loader for å teste funksjonalitet
@@ -36,7 +35,7 @@ export const simpleAskDok = async (dokPath, prompt) => {
 
 // Funksjon som spør mot et markdowndokument med funksjonalitet som multiquery og prompttemplate
 export const askDok = async (dokPath, prompt) => {
-
+  const mdTekst = fs.readFileSync('./docs/delingsinfo.md', 'utf8');
   // Splitting av dokumentet
   const textSplitter = RecursiveCharacterTextSplitter.fromLanguage('markdown', {chunkSize: 300, chunkOverlap: 100});
   const mdOutput = await textSplitter.createDocuments([mdTekst]);
@@ -54,7 +53,6 @@ export const askDok = async (dokPath, prompt) => {
   // Uthenting av relevante "chunks" og spørring mot disse. Spørring gjentas 'queryCount' ganger
   console.log("Nuuuu kjørrr vi chainen")
   const retrievedDocs = await retriever.getRelevantDocuments(prompt);
-  console.log("Nuuuu errrrr vi ferrrrrrdigge")
   const chain = loadQAStuffChain(model);
   const res = await chain.call({ 
     input_documents: retrievedDocs,
@@ -67,8 +65,8 @@ export const askDok = async (dokPath, prompt) => {
   return res
 }
 
+// Funksjon som spør mot et webdokument med funksjonalitet som multiquery og prompttemplate
 export const askWeb = async (webUrl, prompt) => {
-
   const loader = new CheerioWebBaseLoader(webUrl);
   const docs = await loader.load();
   // Indeksering og preprosessering
@@ -89,7 +87,6 @@ export const askWeb = async (webUrl, prompt) => {
   // Uthenting av relevante "chunks" og spørring mot disse. Spørring gjentas 'queryCount' ganger
   console.log("Nuuuu kjørrr vi chainen")
   const retrievedDocs = await retriever.getRelevantDocuments(prompt);
-  console.log("Nuuuu errrrr vi ferrrrrrdigge")
   const chain = loadQAStuffChain(model);
   const res = await chain.call({ 
     input_documents: retrievedDocs,
