@@ -23,9 +23,9 @@ Husk å sette miljøvariabler i .env-fila. Se env.example
 ![qa_flow](./img/qa_flow.jpeg)
 
 ## Funksjoner
-´´´simpleAskDok()´´´ - Enkel POC for å spørre mot et dokument
-´´´askDok()´´´ - Mer funksjonalitet som multiquery og kontekst
-´´´askWeb()´´´ - Spør mot et nettside. Godt egnet for å spørre mot SNL eller Wikipedia
+```simpleAskDok()``` - Enkel POC for å spørre mot et dokument
+```askDok()``` - Mer funksjonalitet som multiquery og kontekst
+```askWeb()``` - Spør mot et nettside. Godt egnet for å spørre mot SNL eller Wikipedia
 
 ## ToDo og veien videre?
 Funskjonalitetsønsker:
