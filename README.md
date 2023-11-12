@@ -32,6 +32,9 @@ Husk å sette miljøvariabler i .env-fila. Se env.example
 
 ## ToDo og veien videre?
 Funskjonalitetsønsker:
+
 Pri 1: En enkel fronttend som kan bakes inn som en chatBot på innsida med mulighet for å spørre mot dokumenter (Forhåndsdefinerte eller at bruker kan laste opp egne?)
+
 Pri 2: En teamsapp (chatVTFK 2.0) med dokSøk-funksjonalitet
+
 Pri 2: En generisk chatbot med mulighet for brukerne å laste opp egne dokumenter (pdf...)
