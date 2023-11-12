@@ -15,54 +15,63 @@ import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 
-const kontekst = "Du skal alltid svare på en enkel og forståelig måte på norsk. Oppgi datoer, frister og kontaktpersoner hvis det er tilgjengelig. På slutten av responsen skal du alltid skrive teksten: 'Husk at responsen fra denne chatboten kan være upresis eller faktisk feil. Det er derfor viktig at du sjekker informasjonen du får her med med informasjon fra kilden.'";
+// Global kontekst som legges til på alle spørringer
+const kontekst =
+  "Du skal alltid svare på en enkel og forståelig måte på norsk. Oppgi datoer, frister og kontaktpersoner hvis det er tilgjengelig. På slutten av responsen skal du alltid skrive teksten: 'Husk at responsen fra denne chatboten kan være upresis eller faktisk feil. Det er derfor viktig at du sjekker informasjonen du får her med med informasjon fra kilden.'";
 
 // Funksjon som spør mot en pdf. Enkel POC med loader for å teste funksjonalitet
 export const simpleAskDok = async (dokPath, prompt) => {
   const loader = new PDFLoader(dokPath);
   const docs = await loader.load();
-  const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 300, chunkOverlap: 100 });
+  const textSplitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 300,
+    chunkOverlap: 100,
+  });
   const splitDocs = await textSplitter.splitDocuments(docs);
   const embeddings = new OpenAIEmbeddings();
-  const vectorStore = await MemoryVectorStore.fromDocuments(splitDocs, embeddings);
+  const vectorStore = await MemoryVectorStore.fromDocuments(
+    splitDocs,
+    embeddings
+  );
   const model = new ChatOpenAI({ modelName: "gpt-3.5-turbo-1106" });
   const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
-  const response = await chain.call({
-    query: kontekst + prompt,
-  });
+  const response = await chain.call({ query: kontekst + prompt });
   console.log(response);
   return response;
 };
 
 // Funksjon som spør mot et markdowndokument med mer avansert funksjonalitet som multiquery og kontekst
 export const askDok = async (dokPath, question) => {
-  const mdTekst = fs.readFileSync(dokPath, 'utf8');
-  
+  const mdTekst = fs.readFileSync(dokPath, "utf8");
   // Splitting av dokumentet
-  const textSplitter = RecursiveCharacterTextSplitter.fromLanguage('markdown', {chunkSize: 500, chunkOverlap: 50});
+  const textSplitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
+    chunkSize: 500,
+    chunkOverlap: 50,
+  });
   const mdOutput = await textSplitter.createDocuments([mdTekst]);
-
   // Indeksering og preprosessering
   const model = new ChatOpenAI({ modelName: "gpt-3.5-turbo-1106" });
-  const vectorstore = await MemoryVectorStore.fromDocuments(mdOutput, new OpenAIEmbeddings());
+  const vectorstore = await MemoryVectorStore.fromDocuments(
+    mdOutput,
+    new OpenAIEmbeddings()
+  );
   const retriever = MultiQueryRetriever.fromLLM({
     llm: model,
     retriever: vectorstore.asRetriever(),
     queryCount: 3,
     verbose: false,
   });
-
-  // Uthenting av relevante "chunks" og spørring mot disse. Spørring gjentas 'queryCount' ganger
-  console.log("Nuuuu kjørrr vi chainen")
   const retrievedDocs = await retriever.getRelevantDocuments(question);
+  // Uthenting av relevante "chunks" og spørring mot disse. Spørring gjentas 'queryCount' ganger
   const chain = loadQAStuffChain(model);
-  const res = await chain.call({ 
+  console.log("Nuuuu kjørrr vi chainen");
+  const res = await chain.call({
     input_documents: retrievedDocs,
-    question: kontekst + question
+    question: kontekst + question,
   });
-  console.log(res)  
-  return true
-}
+  console.log(res);
+  return true;
+};
 
 // Funksjon som spør mot et webdokument med funksjonalitet som multiquery og prompttemplate
 export const askWeb = async (webUrl, prompt) => {
@@ -75,25 +84,24 @@ export const askWeb = async (webUrl, prompt) => {
   const sequence = splitter.pipe(transformer);
   const newDocuments = await sequence.invoke(docs);
   const model = new ChatOpenAI({ modelName: "gpt-3.5-turbo-1106" });
-  const vectorstore = await MemoryVectorStore.fromDocuments(newDocuments, new OpenAIEmbeddings());
+  const vectorstore = await MemoryVectorStore.fromDocuments(
+    newDocuments,
+    new OpenAIEmbeddings()
+  );
   const retriever = MultiQueryRetriever.fromLLM({
     llm: model,
     retriever: vectorstore.asRetriever(),
     queryCount: 3,
     verbose: true,
   });
-
   // Uthenting av relevante "chunks" og spørring mot disse. Spørring gjentas 'queryCount' ganger
-  console.log("Nuuuu kjørrr vi chainen")
+  console.log("Nuuuu kjørrr vi chainen");
   const retrievedDocs = await retriever.getRelevantDocuments(prompt);
   const chain = loadQAStuffChain(model);
-  const res = await chain.call({ 
+  const res = await chain.call({
     input_documents: retrievedDocs,
-    question: kontekst + prompt
+    question: kontekst + prompt,
   });
-  
-  console.log(res)  
-  // console.log(dokPath, prompt);
-  // console.log(retrievedDocs);
-  return res
-}
+  console.log(res);
+  return res;
+};
