@@ -15,19 +15,26 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Global kontekst som legges til på alle spørringer
-const kontekst = "Du skal alltid svare på en enkel og forståelig måte på norsk. Oppgi datoer, frister og kontaktpersoner hvis det er tilgjengelig. På slutten av responsen skal du alltid skrive teksten: 'Husk at responsen fra denne chatboten kan være upresis eller faktisk feil. Det er derfor viktig at du sjekker informasjonen du får her med med informasjon fra kilden.'";
+const kontekst =
+  "Du skal alltid svare på en enkel og forståelig måte på norsk. Oppgi datoer, frister og kontaktpersoner hvis det er tilgjengelig. På slutten av responsen skal du alltid skrive teksten: 'Husk at responsen fra denne chatboten kan være upresis eller faktisk feil. Det er derfor viktig at du sjekker informasjonen du får her med med informasjon fra kilden.'";
 
 export const askDok = async (dokType, dokPath, question) => {
-  let splitDocs
+  let splitDocs;
   // Sjekker dokumenttype og velger og kjører loader
   if (dokType === "pdf") {
     const loader = new PDFLoader(dokPath);
     const docs = await loader.load();
-    const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 500, chunkOverlap: 50 });
+    const textSplitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 500,
+      chunkOverlap: 50,
+    });
     splitDocs = await textSplitter.splitDocuments(docs);
   } else if (dokType === "md") {
     const mdTekst = fs.readFileSync(dokPath, "utf8");
-    const textSplitter = RecursiveCharacterTextSplitter.fromLanguage( "markdown", {chunkSize: 500, chunkOverlap: 50 });
+    const textSplitter = RecursiveCharacterTextSplitter.fromLanguage(
+      "markdown",
+      { chunkSize: 500, chunkOverlap: 50 }
+    );
     splitDocs = await textSplitter.createDocuments([mdTekst]);
   } else if (dokType === "html") {
     const loader = new CheerioWebBaseLoader(dokPath);
@@ -38,15 +45,21 @@ export const askDok = async (dokType, dokPath, question) => {
   }
 
   // Lager en vectorstore fra dokumentene
-  const vectorstore = await MemoryVectorStore.fromDocuments(splitDocs, new OpenAIEmbeddings());
-  const model = new ChatOpenAI({ modelName: "gpt-3.5-turbo-1106", temperature: 0 });
+  const vectorstore = await MemoryVectorStore.fromDocuments(
+    splitDocs,
+    new OpenAIEmbeddings()
+  );
+  const model = new ChatOpenAI({
+    modelName: "gpt-3.5-turbo-1106",
+    temperature: 0,
+  });
   const retriever = MultiQueryRetriever.fromLLM({
     llm: model,
     retriever: vectorstore.asRetriever(),
     queryCount: 3,
     verbose: false,
   });
-  
+
   // Uthenting av relevante "chunks" og spørring mot disse. Spørring gjentas 'queryCount' ganger
   const retrievedDocs = await retriever.getRelevantDocuments(question);
   const chain = loadQAStuffChain(model);
@@ -58,4 +71,4 @@ export const askDok = async (dokType, dokPath, question) => {
   console.log(dokType, dokPath, question);
   console.log(res.text);
   return true;
-}
+};
