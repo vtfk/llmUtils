@@ -15,8 +15,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Global kontekst som legges til på alle spørringer
-const kontekst =
-  "Du skal alltid svare på en enkel og forståelig måte på norsk. Oppgi datoer, frister og kontaktpersoner hvis det er tilgjengelig. På slutten av responsen skal du alltid skrive teksten: 'Husk at responsen fra denne chatboten kan være upresis eller faktisk feil. Det er derfor viktig at du sjekker informasjonen du får her med med informasjon fra kilden.'";
+const kontekst = "Du skal alltid svare på en enkel og forståelig måte på norsk. Oppgi datoer, frister og kontaktpersoner hvis det er tilgjengelig. På slutten av responsen skal du alltid skrive teksten: 'Husk at responsen fra denne chatboten kan være upresis eller faktisk feil. Det er derfor viktig at du sjekker informasjonen du får her med med informasjon fra kilden.'";
 
 export const askDok = async (dokType, dokPath, question) => {
   let splitDocs
@@ -38,6 +37,7 @@ export const askDok = async (dokType, dokPath, question) => {
     splitDocs = await sequence.invoke(docs);
   }
 
+  // Lager en vectorstore fra dokumentene
   const vectorstore = await MemoryVectorStore.fromDocuments(splitDocs, new OpenAIEmbeddings());
   const model = new ChatOpenAI({ modelName: "gpt-3.5-turbo-1106", temperature: 0 });
   const retriever = MultiQueryRetriever.fromLLM({
@@ -46,10 +46,11 @@ export const askDok = async (dokType, dokPath, question) => {
     queryCount: 3,
     verbose: false,
   });
-  const retrievedDocs = await retriever.getRelevantDocuments(question);
+  
   // Uthenting av relevante "chunks" og spørring mot disse. Spørring gjentas 'queryCount' ganger
+  const retrievedDocs = await retriever.getRelevantDocuments(question);
   const chain = loadQAStuffChain(model);
-  console.log("Starter 'chain'...");
+  console.log("Starter 'chainen'...");
   const res = await chain.call({
     input_documents: retrievedDocs,
     question: kontekst + question,
