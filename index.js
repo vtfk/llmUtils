@@ -1,5 +1,4 @@
-import { simpleAskDok, askDok, askWeb } from "./llmDocSearchUtils.js";
+import { askDok } from "./llmDocSearchUtils.js";
 
-// console.log(simpleAskDok("./docs/orden.pdf", "Hvor gjelder reglene?"));
-console.log(askDok("./docs/delingsinfo.md", "Hvem er primærkontakter i Telemark?"));
-// console.log(askWeb("https://snl.no/t%C3%A5ke", "Hva er tåke?"))
+// 
+console.log(askDok("html", "https://snl.no/Gro_Harlem_Brundtland", "I hvilke perioder var Gro statsminister?"));
