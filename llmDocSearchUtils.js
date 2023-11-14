@@ -39,7 +39,7 @@ export const askDok = async (dokType, dokPath, question) => {
   }
 
   const vectorstore = await MemoryVectorStore.fromDocuments(splitDocs, new OpenAIEmbeddings());
-  const model = new ChatOpenAI({ modelName: "gpt-3.5-turbo-1106" });
+  const model = new ChatOpenAI({ modelName: "gpt-3.5-turbo-1106", temperature: 0 });
   const retriever = MultiQueryRetriever.fromLLM({
     llm: model,
     retriever: vectorstore.asRetriever(),
@@ -49,12 +49,12 @@ export const askDok = async (dokType, dokPath, question) => {
   const retrievedDocs = await retriever.getRelevantDocuments(question);
   // Uthenting av relevante "chunks" og spørring mot disse. Spørring gjentas 'queryCount' ganger
   const chain = loadQAStuffChain(model);
-  console.log("Nuuuu kjørrr vi chainen");
+  console.log("Starter 'chain'...");
   const res = await chain.call({
     input_documents: retrievedDocs,
     question: kontekst + question,
   });
   console.log(dokType, dokPath, question);
-  console.log(res);
+  console.log(res.text);
   return true;
 }
