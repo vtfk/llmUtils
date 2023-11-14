@@ -23,12 +23,12 @@ Husk å sette miljøvariabler i .env-fila. Se env.example
 ![qa_flow](./img/qa_flow.jpeg)
 
 ## Funksjoner
-```simpleAskDok()``` - Enkel POC for å spørre mot et dokument
+```askDok((dokType, dokPath, question))``` - Funksjon som søker i angitt dokument. Innparameter: dokType: type dokument, dokPath: path til dokumentet, question: spørsmål som skal søkes etter. Returnerer streng med responsen.
 
-```askDok()``` - Mer funksjonalitet som multiquery og kontekst
-
-```askWeb()``` - Spør mot et nettside. Godt egnet for å spørre mot SNL eller Wikipedia
-
+dokTyper som støttes er:
+  * "md" - MarkDown
+  * "pdf" - PDF
+  * "html" - HTML
 
 ## ToDo og veien videre?
 Funskjonalitetsønsker:
