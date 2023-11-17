@@ -2,7 +2,7 @@
 
 Dette repoet er en eksperimentell sandkasse for å teste ut bruk av språkmodeller til å gjøre smarte søke i dokumenter. Innholdet her er en POC for å teste funksjonalitet og muligheter og er ikke ment for produksjon.
 
-Hovedprogrammet finnes i fila ```lmDocSearchUtils.js```. For å test så kan man kalle funksjonen(e) fra filen```index.js```
+Hovedprogrammet finnes i fila ```llmDocSearchUtils.js```. For å test så kan man kalle funksjonen(e) fra filen```index.js```
 
 Funksjonen(e) er bygget ved hjelp av rammeverket [langchain](https://js.langchain.com/docs/get_started/introduction) som er laget for å gjøre det enkelt å bruke språkmodeller. Koden i dette repoet bruker samme API som chatVTFK med egen datavatale. 
 

@@ -11,6 +11,8 @@ import { loadQAStuffChain } from "langchain/chains";
 import { HtmlToTextTransformer } from "langchain/document_transformers/html_to_text";
 import fs from "fs";
 
+import OpenAI from "openai";
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -72,3 +74,31 @@ export const askDok = async (dokType, dokPath, question) => {
   console.log(res.text);
   return true;
 };
+
+
+export const askDokOpenAI = async () => {
+  
+  const openai = new OpenAI();
+  const completion = await openai.chat.completions.create({
+    messages: [{ role: "system", content: "Du er en hyggelig assistent. Du skal kun svare på spørsmål med utgangspunkt i vedlagte fil.." },{ role: "user", content: "Hva står om underveisvurdering?" }],
+    model: "gpt-3.5-turbo",
+  });
+
+  const myAssistant = await openai.beta.assistants.retrieve(
+    "asst_PP9eODyAvv3Qtd7VJYTfmKEL"
+  );
+
+  //const emptyThread = await openai.beta.threads.create();
+  //console.log(emptyThread);
+
+  const run = await openai.beta.threads.runs.create(
+    "thread_9IScPMsgbKKmGuBM0W78NWzy",
+    { assistant_id: "asst_PP9eODyAvv3Qtd7VJYTfmKEL", instructions: "Hva står om kompetansemål i vedlagte fil?" }
+  );
+
+    console.log(run);
+    console.log(completion.choices[0].message);
+  return true;
+}
+
+
