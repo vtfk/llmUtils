@@ -2,7 +2,10 @@
 
 Dette repoet er en eksperimentell sandkasse for å teste ut bruk av språkmodeller til å gjøre smarte søke i dokumenter. Innholdet her er en POC for å teste funksjonalitet og muligheter og er ikke ment for produksjon.
 
-Hovedprogrammet finnes i fila ```llmDocSearchUtils.js```. For å test så kan man kalle funksjonen(e) fra filen```index.js```
+Repoet inneholder to "biblioteker" med funksjoner som kan brukes til spørringer mot språkmodeller.
+
+* ```docChatUtilsLangchain.js``` - Funksjoner for å søke i dokumenter ved hjelp av språkmodeller. Bruker RAG (Retrieval Augmented Generation) for å dele opp dokumenter i mindre deler (chunks) som kan søkes mot.
+* ```docChatUtilsOpenAI.js``` - Diverse funksjoner som benytter seg av OpenAI sitt nye API med bl.a. assistener m.m.
 
 Funksjonen(e) er bygget ved hjelp av rammeverket [langchain](https://js.langchain.com/docs/get_started/introduction) som er laget for å gjøre det enkelt å bruke språkmodeller. Koden i dette repoet bruker samme API som chatVTFK med egen datavatale. 
 
